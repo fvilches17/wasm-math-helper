@@ -1,6 +1,9 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = environment => {
 
@@ -17,7 +20,7 @@ module.exports = environment => {
     const module = {
         rules: [
             { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
-            { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] }
+            { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] }
         ]
     };
 
@@ -40,6 +43,9 @@ module.exports = environment => {
             hash: true,
             minify: minifyHtmlSettings
         }),
+        new MiniCssExtractPlugin({
+            filename: '[name].css?[hash]'
+        })
     ];
 
     //Base Config
@@ -50,6 +56,9 @@ module.exports = environment => {
         config.mode = 'production';
         config.devtool = 'source-map';
         config.performance = { hints: 'error', maxAssetSize: 100000 /*bytes*/ };
+        config.optimization = {
+            minimizer: [new OptimizeCssAssetsPlugin(), new TerserPlugin({ sourceMap: true })]
+        };
     }
 
     //Development Config
