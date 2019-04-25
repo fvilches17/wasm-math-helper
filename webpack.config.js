@@ -2,25 +2,35 @@ const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = environment => {
 
     //Entry
-    const entry = { app: "./src/app.js" };
+    const entry = { app: './src/app.js' };
 
     //Output
     const output = {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js'
+        filename: '[name].min.js'
     };
 
     //Loaders
+    const cssLoader = environment.production ? {
+        loader: 'css-loader',
+        options: { sourceMap: true }
+    } : 'css-loader';
+
+    const sassLoader = environment.production ? {
+        loader: 'sass-loader',
+        options: { sourceMap: true }
+    } : 'sass-loader';
+
     const module = {
         rules: [
             { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
-            { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] }
+            { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, cssLoader, sassLoader] }
         ]
     };
 
@@ -44,7 +54,8 @@ module.exports = environment => {
             minify: minifyHtmlSettings
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].css?[hash]'
+            filename: '[name].min.css',
+            chunkFilename: '[id].min.css'
         })
     ];
 
@@ -57,7 +68,17 @@ module.exports = environment => {
         config.devtool = 'source-map';
         config.performance = { hints: 'error', maxAssetSize: 100000 /*bytes*/ };
         config.optimization = {
-            minimizer: [new OptimizeCssAssetsPlugin(), new TerserPlugin({ sourceMap: true })]
+            minimizer: [
+                new OptimizeCssAssetsPlugin({
+                    cssProcessorOptions: {
+                        map: {
+                            inline: false,
+                            annotation: true,
+                        }
+                    }
+                }),
+                new TerserJsPlugin({ sourceMap: true })
+            ]
         };
     }
 
