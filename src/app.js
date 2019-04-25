@@ -1,4 +1,4 @@
 'use strict';
-import './app.scss';
+import './app.css';
 
 alert('Hello WASM');

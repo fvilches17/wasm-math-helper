@@ -22,15 +22,10 @@ module.exports = environment => {
         options: { sourceMap: true }
     } : 'css-loader';
 
-    const sassLoader = environment.production ? {
-        loader: 'sass-loader',
-        options: { sourceMap: true }
-    } : 'sass-loader';
-
     const module = {
         rules: [
             { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
-            { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, cssLoader, sassLoader] }
+            { test: /\.css$/, use: [MiniCssExtractPlugin.loader, cssLoader] }
         ]
     };
 
