@@ -1,0 +1,7 @@
+# /node_modules/* in the project root are ignored by default
+
+# Ignore all JS files by default 
+**/*.js
+
+#Except JS files in the src directory
+!src/**
