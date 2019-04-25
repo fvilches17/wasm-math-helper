@@ -11,9 +11,10 @@ module.exports = environment => {
     const entry = { app: './src/app.js' };
 
     //Output
+    const filename = environment.production ? '[name].min.js' : '[name].js';
     const output = {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].min.js'
+        filename
     };
 
     //Loaders
