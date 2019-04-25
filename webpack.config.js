@@ -8,7 +8,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = environment => {
 
     //Entry
-    const entry = { index: "./src/index.js" };
+    const entry = { app: "./src/app.js" };
 
     //Output
     const output = {
@@ -38,8 +38,8 @@ module.exports = environment => {
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: './src/index.html',
-            favicon: path.resolve(__dirname, 'src/favicon.png'),
-            chunks: ['index'],
+            favicon: path.resolve(__dirname, './src/favicon.png'),
+            chunks: ['app'],
             hash: true,
             minify: minifyHtmlSettings
         }),
