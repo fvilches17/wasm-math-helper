@@ -1,2 +1,4 @@
 node_modules
 dist
+src/rustlib/pkg/**
+src/rustlib/target/**

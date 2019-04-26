@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 
 module.exports = environment => {
 
@@ -40,6 +41,16 @@ module.exports = environment => {
         useShortDoctype: true
     } : false;
 
+    const wasmBuildArgs = [
+        '--no-typescript',
+        '--out-dir pkg',
+        '--out-name rustlib'
+    ];
+
+    if (environment.production) {
+        wasmBuildArgs.push('--release');
+    }
+
     const plugins = [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
@@ -52,6 +63,10 @@ module.exports = environment => {
         new MiniCssExtractPlugin({
             filename: '[name].min.css',
             chunkFilename: '[id].min.css'
+        }),
+        new WasmPackPlugin({
+            crateDirectory: path.resolve(__dirname, "./src/rustlib"),
+            extraArgs: wasmBuildArgs.join(' ')
         })
     ];
 
@@ -60,6 +75,13 @@ module.exports = environment => {
 
     //Production Config
     if (environment.production) {
+        const babelRule = { 
+            test: /\.m?js$/, 
+            exclude: /(node_modules|bower_components)/, 
+            use: ['babel-loader'] 
+        };
+
+        config.module.rules.push(babelRule);
         config.mode = 'production';
         config.devtool = 'source-map';
         config.performance = { hints: 'error', maxAssetSize: 100000 /*bytes*/ };

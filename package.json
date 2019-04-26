@@ -29,6 +29,12 @@
   },
   "homepage": "https://github.com/fvilches17/wasm-math-helper#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.4.3",
+    "@wasm-tool/wasm-pack-plugin": "^0.2.7",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
     "clean-webpack-plugin": "^2.0.1",
     "css-loader": "^2.1.1",
     "eslint": "^5.16.0",
