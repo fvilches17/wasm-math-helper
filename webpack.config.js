@@ -6,32 +6,40 @@ const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 
-module.exports = environment => {
+function loadOutput(environment) {
+    const filename = environment.production ? 'scripts/[name].min.js' : 'scripts/[name].js';
+    return { path: path.resolve(__dirname, 'dist'), filename };
+};
 
-    //Entry
-    const entry = { app: './src/app.js' };
+function loadModule(environment) {
 
-    //Output
-    const filename = environment.production ? '[name].min.js' : '[name].js';
-    const output = {
-        path: path.resolve(__dirname, 'dist'),
-        filename
-    };
-
-    //Loaders
-    const cssLoader = environment.production ? {
+    const cssLoader = {
         loader: 'css-loader',
-        options: { sourceMap: true }
-    } : 'css-loader';
-
-    const module = {
-        rules: [
-            { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
-            { test: /\.css$/, use: [MiniCssExtractPlugin.loader, cssLoader] }
-        ]
+        options: { sourceMap: environment.production }
     };
 
-    //Plugins
+    const sassLoader = {
+        loader: 'sass-loader',
+        options: { sourceMap: environment.production }
+    };
+
+    const rules = [
+        { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
+        { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, cssLoader, sassLoader] }
+    ]
+
+    if (environment.production) {
+        rules.push({
+            test: /\.m?js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: ['babel-loader']
+        });
+    }
+
+    return { rules };
+};
+
+function loadPlugins(environment) {
     const minifyHtmlSettings = environment.production ? {
         collapseWhitespace: true,
         removeComments: true,
@@ -43,7 +51,7 @@ module.exports = environment => {
 
     const wasmBuildArgs = [
         '--no-typescript',
-        '--out-dir pkg',
+        '--out-dir build',
         '--out-name rustlib'
     ];
 
@@ -51,7 +59,7 @@ module.exports = environment => {
         wasmBuildArgs.push('--release');
     }
 
-    const plugins = [
+    return [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: './src/index.html',
@@ -61,28 +69,29 @@ module.exports = environment => {
             minify: minifyHtmlSettings
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].min.css',
-            chunkFilename: '[id].min.css'
+            filename: environment.production ? 'styles/[name].min.css' : 'styles/[name].css',
+            chunkFilename: environment.production ? 'styles/[id].min.css' : 'styles/[id].css'
         }),
         new WasmPackPlugin({
             crateDirectory: path.resolve(__dirname, "./src/rustlib"),
             extraArgs: wasmBuildArgs.join(' ')
         })
     ];
+};
+
+module.exports = environment => {
+
+    const mode = environment.production ? 'production' : 'development';
+    const entry = { app: './src/scripts/app.js' };
+    const output = loadOutput(environment);
+    const module = loadModule(environment);
+    const plugins = loadPlugins(environment);
 
     //Base Config
-    const config = { entry, output, module, plugins };
+    const config = { mode, entry, output, module, plugins };
 
-    //Production Config
+    //Additional Production Config
     if (environment.production) {
-        const babelRule = { 
-            test: /\.m?js$/, 
-            exclude: /(node_modules|bower_components)/, 
-            use: ['babel-loader'] 
-        };
-
-        config.module.rules.push(babelRule);
-        config.mode = 'production';
         config.devtool = 'source-map';
         config.performance = { hints: 'error', maxAssetSize: 100000 /*bytes*/ };
         config.optimization = {
@@ -100,9 +109,8 @@ module.exports = environment => {
         };
     }
 
-    //Development Config
+    //Additional Development Config
     else {
-        config.mode = 'development';
         config.devServer = {
             compress: true,
             contentBase: path.join(__dirname, 'dist'),
