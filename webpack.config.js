@@ -73,14 +73,14 @@ function loadPlugins(environment) {
             chunkFilename: environment.production ? 'styles/[id].min.css' : 'styles/[id].css'
         }),
         new WasmPackPlugin({
-            crateDirectory: path.resolve(__dirname, "./src/rustlib"),
+            crateDirectory: path.resolve(__dirname, "./src/rust"),
             extraArgs: wasmBuildArgs.join(' ')
         })
     ];
 };
 
 module.exports = environment => {
-
+    
     const mode = environment.production ? 'production' : 'development';
     const entry = { app: './src/scripts/app.js' };
     const output = loadOutput(environment);

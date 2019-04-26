@@ -4,7 +4,7 @@ module.exports = {
         ['@babel/preset-env', {
             debug: true,
             targets: {
-                browsers: ['> 1%', 'not IE < 12']
+                browsers: ['> 2%', 'not IE < 12']
             }
         }]
     ]

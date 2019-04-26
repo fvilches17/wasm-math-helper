@@ -1,5 +1,5 @@
 node_modules
 dist
-src/rustlib/build
-src/rustlib/pkg
-src/rustlib/target
+src/rust/build
+src/rust/pkg
+src/rust/target
