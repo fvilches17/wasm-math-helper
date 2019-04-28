@@ -49,16 +49,6 @@ function loadPlugins(environment) {
         useShortDoctype: true
     } : false;
 
-    const wasmBuildArgs = [
-        '--no-typescript',
-        '--out-dir build',
-        '--out-name rustlib'
-    ];
-
-    if (environment.production) {
-        wasmBuildArgs.push('--release');
-    }
-
     return [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
@@ -74,7 +64,8 @@ function loadPlugins(environment) {
         }),
         new WasmPackPlugin({
             crateDirectory: path.resolve(__dirname, "./src/rust"),
-            extraArgs: wasmBuildArgs.join(' ')
+            forceMode: environment.production ? 'production' : 'development',
+            extraArgs: '--no-typescript --out-dir build --out-name rustlib'
         })
     ];
 };
