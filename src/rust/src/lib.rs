@@ -1,16 +1,26 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn add(x: i32, y: i32) -> i32 {
-    x + y
-}
+pub fn is_prime_number(number: i32) -> bool {
+    if number < 1 {
+        return false;
+    }
 
-#[wasm_bindgen]
-pub fn subtract(x: i32, y: i32) -> i32 {
-    x - y
-}
+    let is_number_even: bool = number % 2 == 0;
+    if is_number_even {
+        return false;
+    }
 
-#[wasm_bindgen]
-pub fn multiply(x: i32, y: i32) -> i32 {
-    x * y
+    let mut index: i32 = 3;
+
+    while index < number {
+        let is_divisible: bool = number % index == 0;
+        if is_divisible {
+            return false;
+        }
+
+        index += 2;
+    }
+
+    return true;
 }

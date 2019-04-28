@@ -4,4 +4,4 @@
 **/*.js
 
 #Except JS files in the src directory
-!src/**
+!src/scripts/**
