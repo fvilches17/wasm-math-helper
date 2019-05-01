@@ -1,11 +1,30 @@
 'use strict';
 import '../styles/app.scss';
 
-(async () => {
+const worker = new Worker('./mathWorker.js', { type: 'module' });
 
-    const { is_prime_number } = await import('../rust/build');
-    const answer = prompt("Enter nummber > ");
-    const number = Number.parseInt(answer);
-    alert(`Is Prime: ${is_prime_number(number)}`);
+async function handleMathExampleClickEvent(event) {
 
-})();
+    event.preventDefault();
+    const button = event.target;
+    const input = button.parentElement.querySelector('input');
+    const loader = button.parentElement.querySelector('.loader');
+
+    loader.style.visibility = 'visible';
+
+    worker.onmessage = function (e) {
+        loader.style.visibility = 'hidden';
+        alert(JSON.stringify(e.data));
+    };
+
+    worker.onerror = function (e) {
+        loader.style.visibility = 'hidden';
+        alert(e.data);
+    };
+
+    const number = Number.parseInt(input.value);
+    const instructionFormat = button.dataset.instructionFormat;
+    worker.postMessage({ number, instructionFormat });
+}
+
+document.querySelectorAll('.math-example button').forEach(button => button.onclick = handleMathExampleClickEvent);  

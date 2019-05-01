@@ -9,7 +9,34 @@
 </head>
 
 <body>
-    <h1>Wasm Math Helper</h1>
+    <header>
+        <h1>Wasm Math Helper</h1>
+    </header>
+    <main>
+        <section>
+            <div class="math-example">
+                <h1>Wasm</h1>
+                <h2>Is Prime Number</h2>
+                <input type="number" placeholder="e.g. 2145390523">
+                <button data-instruction-format="WASM">Check</button>
+                <img class="loader" src="<%=require('./media/loader-rainy-clouds.gif')%>" alt="loading...">
+            </div>
+        </section>
+
+        <section>
+            <div class="math-example">
+                <h1>JS</h1>
+                <h2>Is Prime Number</h2>
+                <input type="number" placeholder="e.g. 2145390523">
+                <button data-instruction-format="JS">Check</button>
+                <img class="loader" src="<%=require('./media/loader-rainy-clouds.gif')%>" alt="loading...">
+            </div>
+        </section>
+    </main>
+    <footer>
+        <a href="https://github.com/fvilches17/wasm-math-helper">Source Code</a> |
+        <a href="https://webassembly.org/">WebAssembly.org</a>
+    </footer>
 </body>
 
 </html>

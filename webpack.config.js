@@ -5,10 +5,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
+const WorkerPlugin = require('worker-plugin');
 
 function loadOutput(environment) {
-    const filename = environment.production ? 'scripts/[name].min.js' : 'scripts/[name].js';
-    return { path: path.resolve(__dirname, 'dist'), filename };
+    const filename = environment.production ? 'scripts/[name].[hash].min.js' : 'scripts/[name].js';
+    return { path: path.resolve(__dirname, 'dist'), filename, publicPath: '/' };
 };
 
 function loadModule(environment) {
@@ -23,9 +24,43 @@ function loadModule(environment) {
         options: { sourceMap: environment.production }
     };
 
+    const resolveUrlLoader = {
+        loader: 'resolve-url-loader',
+        options: { sourceMap: environment.production }
+    };
+
+    const fileLoader = {
+        loader: 'file-loader',
+        options: { name: 'media/[name].[hash].[ext]' }
+    };
+
+    const imageLoader = {
+        loader: 'image-webpack-loader',
+        options: {
+            mozjpeg: {
+                progressive: true,
+                quality: 65
+            },
+            optipng: {
+                enabled: false,
+            },
+            pngquant: {
+                quality: '65-90',
+                speed: 4
+            },
+            gifsicle: {
+                interlaced: false,
+            },
+            webp: {
+                quality: 75
+            }
+        }
+    }
+
     const rules = [
         { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
-        { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, cssLoader, sassLoader] }
+        { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, cssLoader, resolveUrlLoader, sassLoader] },
+        { test: /\.(png|jpe?g|gif)$/, use: [fileLoader, imageLoader] }
     ]
 
     if (environment.production) {
@@ -50,7 +85,6 @@ function loadPlugins(environment) {
     } : false;
 
     return [
-        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: './src/index.html',
             favicon: path.resolve(__dirname, './src/favicon.png'),
@@ -59,19 +93,21 @@ function loadPlugins(environment) {
             minify: minifyHtmlSettings
         }),
         new MiniCssExtractPlugin({
-            filename: environment.production ? 'styles/[name].min.css' : 'styles/[name].css',
+            filename: environment.production ? 'styles/[name].[hash].min.css' : 'styles/[name].css',
             chunkFilename: environment.production ? 'styles/[id].min.css' : 'styles/[id].css'
         }),
         new WasmPackPlugin({
             crateDirectory: path.resolve(__dirname, "./src/rust"),
             forceMode: environment.production ? 'production' : 'development',
             extraArgs: '--no-typescript --out-dir build --out-name rustlib'
-        })
+        }),
+        new WorkerPlugin({ globalObject: 'self' }),
+        new CleanWebpackPlugin()
     ];
 };
 
 module.exports = environment => {
-    
+
     const mode = environment.production ? 'production' : 'development';
     const entry = { app: './src/scripts/app.js' };
     const output = loadOutput(environment);
@@ -84,7 +120,7 @@ module.exports = environment => {
     //Additional Production Config
     if (environment.production) {
         config.devtool = 'source-map';
-        config.performance = { hints: 'error', maxAssetSize: 100000 /*bytes*/ };
+        config.performance = { hints: 'error' };
         config.optimization = {
             minimizer: [
                 new OptimizeCssAssetsPlugin({
