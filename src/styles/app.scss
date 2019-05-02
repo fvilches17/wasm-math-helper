@@ -79,6 +79,20 @@ html {
       visibility: hidden;
     }
 
+    .math-result {
+      font-weight: bolder;
+    }
+
+    .math-result-correct {
+      @extend .math-result;
+      color: #0a9929;
+    }
+
+    .math-result-incorrect {
+      @extend .math-result;
+      color: #990f0a;
+    }
+
     .math-example {
       margin: 15px;
       padding: 30px;
