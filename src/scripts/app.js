@@ -3,7 +3,7 @@ import { KeyboardKeyCodes } from './keyboard-key-codes';
 import * as JsNumberHelper from './js-number-helper';
 let isPrimeNumberWasmFunction = undefined;
 
-async function getPrimeNumberResults(number, instructionFormat) {
+async function getPrimeNumberCheckResult(number, instructionFormat) {
     JsNumberHelper.validate32BitInteger(number);
 
     let isPrimeNumber = undefined;
@@ -18,7 +18,7 @@ async function getPrimeNumberResults(number, instructionFormat) {
 
         case 'WASM':
             if (!isPrimeNumberWasmFunction) {
-                const { is_prime_number } = await import(/* webpackChunkName: "../rustlib" */ '../rust/build');
+                const { is_prime_number } = await import('../rust/build');
                 isPrimeNumberWasmFunction = is_prime_number;
             }
             startTime = Date.now();
@@ -56,7 +56,7 @@ async function handleMathExampleClickEvent(event) {
     displayMessage(resultDisplayArea, 'loading...');
 
     try {
-        const result = await getPrimeNumberResults(number, button.dataset.instructionFormat);
+        const result = await getPrimeNumberCheckResult(number, button.dataset.instructionFormat);
         displayResult(resultDisplayArea, result);
     }
     catch (error) {
