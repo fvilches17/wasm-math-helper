@@ -1,39 +1,5 @@
 import '../styles/app.scss';
 import { KeyboardKeyCodes } from './keyboard-key-codes';
-import * as JsNumberHelper from './js-number-helper';
-
-let isPrimeNumberWasmFunction = undefined;
-let greetWasmFunction = undefined;
-
-async function getPrimeNumberResult(number, instructionFormat) {
-    JsNumberHelper.validate32BitInteger(number);
-
-    let isPrimeNumber = undefined;
-    let startTime = undefined;
-    let timeElapsedInMilliseconds = undefined;
-    switch (instructionFormat) {
-        case 'JS':
-            startTime = Date.now();
-            isPrimeNumber = JsNumberHelper.isPrimeNumber(number);
-            timeElapsedInMilliseconds = Date.now() - startTime;
-            break;
-
-        case 'WASM':
-            if (!isPrimeNumberWasmFunction) {
-                const { is_prime_number } = await import('../rust/build');
-                isPrimeNumberWasmFunction = is_prime_number;
-            }
-            startTime = Date.now();
-            isPrimeNumber = isPrimeNumberWasmFunction(number);
-            timeElapsedInMilliseconds = Date.now() - startTime;
-            break;
-
-        default:
-            throw new Error(`Invalid instruction format: '${instructionFormat}'`);
-    }
-
-    return { isPrimeNumber, timeElapsedInMilliseconds };
-}
 
 function displayResult(target, result) {
     const message = `${result.isPrimeNumber} (${result.timeElapsedInMilliseconds}ms)`;
@@ -41,6 +7,14 @@ function displayResult(target, result) {
     target.classList.toggle('math-result-incorrect', !result.isPrimeNumber);
     target.innerText = message;
 }
+
+function displayMessage(target, message) {
+    target.className = '';
+    target.classList.add('math-result');
+    target.innerText = message;
+}
+
+const mathWorker = new Worker('./math.worker.js', { type: 'module' });
 
 async function handleMathExampleClickEvent(event) {
     event.preventDefault();
@@ -53,15 +27,26 @@ async function handleMathExampleClickEvent(event) {
     input.dataset.previousVal = number;
 
     const resultDisplayArea = parentElement.querySelector('.math-result');
-    resultDisplayArea.innerText = 'loading...';
-    
-    try {
-        const result = await getPrimeNumberResult(number, button.dataset.instructionFormat);
-        displayResult(resultDisplayArea, result);
-    }
-    catch (error) {
-        resultDisplayArea.innerText = error;
-    }
+    displayMessage(resultDisplayArea, 'loading...');
+
+    const loader = parentElement.querySelector('.loader');
+    loader.style.visibility = 'visible';
+
+    mathWorker.onmessage = event => {
+        displayResult(resultDisplayArea, event.data);
+        loader.style.visibility = 'hidden';
+    };
+
+    mathWorker.onerror = event => {
+        displayMessage(resultDisplayArea, event.data);
+        loader.style.visibility = 'hidden';
+    };
+
+    mathWorker.postMessage({
+        operation: 'CheckIfPrimeNumber',
+        number,
+        instructionFormat: button.dataset.instructionFormat
+    });
 }
 
 function processKeyUpEvent(event) {
@@ -76,12 +61,14 @@ function processKeyUpEvent(event) {
 
 async function handleHeaderClickEvent(event) {
     event.preventDefault();
-    const { greet } = await import('../rust/build');
-    if (!greetWasmFunction) {
-        greetWasmFunction = greet;
-    }
 
-    greetWasmFunction('Hello from WASM (built with Rust)!');
+
+    // const { greet } = await import('../rust/build');
+    // if (!greetWasmFunction) {
+    //     greetWasmFunction = greet;
+    // }
+
+    // greetWasmFunction('Hello from WASM (built with Rust)!');
 }
 
 document.querySelectorAll('.math-example button').forEach(button => button.onclick = handleMathExampleClickEvent);
