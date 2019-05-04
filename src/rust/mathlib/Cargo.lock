@@ -24,6 +24,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "mathlib"
+version = "0.1.0"
+dependencies = [
+ "wasm-bindgen 0.2.42 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "0.4.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -37,13 +44,6 @@ version = "0.6.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro2 0.4.28 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "rustlib"
-version = "0.1.0"
-dependencies = [
- "wasm-bindgen 0.2.42 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

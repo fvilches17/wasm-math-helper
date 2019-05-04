@@ -1,16 +1,6 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn greet(message: &str) {
-    alert(message);
-}
-
-#[wasm_bindgen]
 pub fn is_prime_number(number: i32) -> bool {
     if number < 1 {
         return false;

@@ -59,16 +59,17 @@ function processKeyUpEvent(event) {
     }
 }
 
+
+let greetWasmFunction = undefined;
 async function handleHeaderClickEvent(event) {
     event.preventDefault();
 
+    const { greet } = await import('../rust/greetinglib/build');
+    if (!greetWasmFunction) {
+        greetWasmFunction = greet;
+    }
 
-    // const { greet } = await import('../rust/build');
-    // if (!greetWasmFunction) {
-    //     greetWasmFunction = greet;
-    // }
-
-    // greetWasmFunction('Hello from WASM (built with Rust)!');
+    greetWasmFunction();
 }
 
 document.querySelectorAll('.math-example button').forEach(button => button.onclick = handleMathExampleClickEvent);

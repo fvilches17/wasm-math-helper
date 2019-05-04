@@ -1,5 +1,5 @@
 [package]
-name = "rustlib"
+name = "mathlib"
 version = "0.1.0"
 authors = ["Francisco Vilches <f_vilches17@outlook.com>"]
 edition = "2018"

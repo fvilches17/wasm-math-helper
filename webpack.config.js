@@ -89,7 +89,17 @@ function loadPlugins(environment) {
         useShortDoctype: true
     } : false;
 
+    function createWasmPackPlugin(libName) {
+        return new WasmPackPlugin({
+            crateDirectory: path.resolve(__dirname, `./src/rust/${libName}`),
+            forceMode: environment.production ? 'production' : 'development',
+            extraArgs: '--no-typescript --out-dir build --out-name lib'
+        })
+    }
+
     return [
+        createWasmPackPlugin('mathlib'),
+        createWasmPackPlugin('greetinglib'),
         new HtmlWebpackPlugin({
             template: './src/index.html',
             favicon: path.resolve(__dirname, './src/favicon.png'),
@@ -100,11 +110,6 @@ function loadPlugins(environment) {
         new MiniCssExtractPlugin({
             filename: environment.production ? 'styles/[name].[hash].min.css' : 'styles/[name].css',
             chunkFilename: environment.production ? 'styles/[id].min.css' : 'styles/[id].css'
-        }),
-        new WasmPackPlugin({
-            crateDirectory: path.resolve(__dirname, "./src/rust"),
-            forceMode: environment.production ? 'production' : 'development',
-            extraArgs: '--no-typescript --out-dir build --out-name rustlib'
         }),
         new WorkerPlugin(),
         new CleanWebpackPlugin()

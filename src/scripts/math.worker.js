@@ -16,7 +16,7 @@ async function getPrimeNumberResult(number, instructionFormat) {
 
         case 'WASM':
             if (!isPrimeNumberWasmFunction) {
-                const { is_prime_number } = await import('../rust/build');
+                const { is_prime_number } = await import('../rust/mathlib/build');
                 isPrimeNumberWasmFunction = is_prime_number;
             }
             startTime = Date.now();

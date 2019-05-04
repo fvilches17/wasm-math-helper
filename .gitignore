@@ -1,5 +1,5 @@
 node_modules
 dist
-src/rust/build
-src/rust/pkg
-src/rust/target
+src/rust/*/build/
+src/rust/*/pkg/
+src/rust/*/target/
