@@ -5,7 +5,7 @@ import * as JsNumberHelper from './js-number-helper';
 let isPrimeNumberWasmFunction = undefined;
 let greetWasmFunction = undefined;
 
-async function getPrimeNumberCheckResult(number, instructionFormat) {
+async function getPrimeNumberResult(number, instructionFormat) {
     JsNumberHelper.validate32BitInteger(number);
 
     let isPrimeNumber = undefined;
@@ -54,9 +54,9 @@ async function handleMathExampleClickEvent(event) {
 
     const resultDisplayArea = parentElement.querySelector('.math-result');
     resultDisplayArea.innerText = 'loading...';
-
+    
     try {
-        const result = await getPrimeNumberCheckResult(number, button.dataset.instructionFormat);
+        const result = await getPrimeNumberResult(number, button.dataset.instructionFormat);
         displayResult(resultDisplayArea, result);
     }
     catch (error) {
