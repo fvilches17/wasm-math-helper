@@ -1,7 +1,9 @@
 import '../styles/app.scss';
 import { KeyboardKeyCodes } from './keyboard-key-codes';
 import * as JsNumberHelper from './js-number-helper';
+
 let isPrimeNumberWasmFunction = undefined;
+let greetWasmFunction = undefined;
 
 async function getPrimeNumberCheckResult(number, instructionFormat) {
     JsNumberHelper.validate32BitInteger(number);
@@ -74,5 +76,16 @@ function processKeyUpEvent(event) {
     }
 }
 
+async function handleHeaderClickEvent(event) {
+    event.preventDefault();
+    const { greet } = await import('../rust/build');
+    if (!greetWasmFunction) {
+        greetWasmFunction = greet;
+    }
+
+    greetWasmFunction('Hello from WASM (built with Rust)!');
+}
+
 document.querySelectorAll('.math-example button').forEach(button => button.onclick = handleMathExampleClickEvent);
 document.querySelectorAll('.math-example input').forEach(input => input.addEventListener('keyup', processKeyUpEvent));
+document.querySelector('header').onclick = handleHeaderClickEvent;

@@ -6,8 +6,7 @@ $border-color: #474747;
 
 html {
   margin: 0;
-  height: 100vmax;
-  width: 100vmax;
+  height: 100vh;
 
   body {
     background-color: $background-color;
@@ -15,6 +14,7 @@ html {
     font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
     letter-spacing: 0.1em;
     margin: 0;
+    height: 100%;
 
     header {
       padding-top: 2vw;
@@ -31,15 +31,22 @@ html {
 
     main {
       text-align: center;
+      height: 50%;
+      padding: 15px;
     }
 
     footer {
-      padding: 8vh;
+      padding-top: 30px;
       text-align: center;
       border-top-color: $border-color;
       border-top-style: dashed;
-      margin-top: 15px;
       background-color: #e244da09;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 100px;
+      width: 100%;
+      overflow: hidden;
     }
 
     section {
