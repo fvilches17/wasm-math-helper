@@ -5,7 +5,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
-const WorkerPlugin = require('worker-plugin');
 
 function loadOutput(environment) {
     const filename = environment.production ? 'scripts/[name].[hash].min.js' : 'scripts/[name].js';
@@ -101,7 +100,6 @@ function loadPlugins(environment) {
             forceMode: environment.production ? 'production' : 'development',
             extraArgs: '--no-typescript --out-dir build --out-name rustlib'
         }),
-        new WorkerPlugin({ globalObject: 'self' }),
         new CleanWebpackPlugin()
     ];
 };

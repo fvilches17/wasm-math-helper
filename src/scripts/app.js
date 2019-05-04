@@ -1,5 +1,26 @@
 import '../styles/app.scss';
 import { KeyboardKeyCodes } from './keyboard-key-codes';
+import * as JsNumberHelper from './js-number-helper';
+let isPrimeNumberWasmFunction = undefined;
+
+const checkPrimeNumber = function (number, callback) {
+    JsNumberHelper.validate32BitInteger(number);
+    const startTime = Date.now();
+    const result = callback(number);
+    const timeElapsedInMilliseconds = Date.now() - startTime;
+    return { isPrime: result, timeElapsedInMilliseconds };
+}
+
+function displayMessage(target, message, classList) {
+    if (classList) target.classList.add(...classList);
+    target.innerText = message;
+}
+
+function displayResult(target, result) {
+    const message = `${result.isPrime} (${result.timeElapsedInMilliseconds}ms)`;
+    const classList = ['math-result', (result.isPrime ? 'math-result-correct' : 'math-result-incorrect')];
+    displayMessage(target, message, classList);
+}
 
 async function handleMathExampleClickEvent(event) {
     event.preventDefault();
@@ -10,31 +31,35 @@ async function handleMathExampleClickEvent(event) {
     if (!number) return;
 
     const resultDisplayArea = parentElement.querySelector('.math-result');
-    clearResultDisplayArea(resultDisplayArea);
+    displayMessage(resultDisplayArea, 'loading...');
 
-    const loader = parentElement.querySelector('.loader');
-    loader.style.visibility = 'visible';
+    try {
+        let result = undefined;
+        const instructionFormat = button.dataset.instructionFormat;
 
-    const worker = new Worker('./mathWorker.js', { type: 'module' });
-    const instructionFormat = button.dataset.instructionFormat;
+        switch (instructionFormat) {
+            case 'JS': {
+                result = checkPrimeNumber(number, JsNumberHelper.isPrimeNumber);
+                break;
+            }
+            case 'WASM': {
+                if (!isPrimeNumberWasmFunction) {
+                    const { is_prime_number } = await import(/* webpackChunkName: "../rustlib" */ '../rust/build/rustlib');
+                    isPrimeNumberWasmFunction = is_prime_number;
+                }
 
-    worker.postMessage({ number, instructionFormat /*JS or WASM*/ });
+                result = checkPrimeNumber(number, isPrimeNumberWasmFunction);
+                break;
+            }
+            default:
+                throw new Error(`Invalid instruction format: '${instructionFormat}'`);
+        }
 
-    worker.onmessage = function (e) {
-        loader.style.visibility = 'hidden';
-        resultDisplayArea.classList.add(e.data.isPrime ? 'math-result-correct' : 'math-result-incorrect');
-        resultDisplayArea.innerText = `${e.data.isPrime} (${e.data.timeElapsedInMilliseconds}ms)`;
-    };
-
-    worker.onerror = function (e) {
-        loader.style.visibility = 'hidden';
-        resultDisplayArea.innerText = e.data;
-    };
-}
-
-function clearResultDisplayArea(target) {
-    target.className = 'math-result';
-    target.innerText = '...';
+        displayResult(resultDisplayArea, result);
+    }
+    catch (error) {
+        displayMessage(resultDisplayArea, error);
+    }
 }
 
 function processKeyUpEvent(event) {
