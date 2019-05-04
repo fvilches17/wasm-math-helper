@@ -55,8 +55,10 @@ async function handleMathExampleClickEvent(event) {
     const button = event.target;
     const parentElement = button.parentElement;
     const input = parentElement.querySelector('input');
+    const previousValue = input.dataset.enteredval;
     const number = Number.parseInt(input.value);
-    if (!number) return;
+    if (!number || number == previousValue) return;
+    input.dataset.enteredval = number;
 
     const resultDisplayArea = parentElement.querySelector('.math-result');
     displayMessage(resultDisplayArea, 'loading...');
