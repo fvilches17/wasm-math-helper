@@ -5,11 +5,14 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
-const WorkerPlugin = require('worker-plugin');
 
 function loadOutput(environment) {
     const filename = environment.production ? 'scripts/[name].[hash].min.js' : 'scripts/[name].js';
-    return { path: path.resolve(__dirname, 'dist'), filename, publicPath: '/' };
+    return {
+        path: path.resolve(__dirname, 'dist'),
+        filename,
+        publicPath: '/'
+    };
 };
 
 function loadModule(environment) {
@@ -58,7 +61,7 @@ function loadModule(environment) {
     }
 
     const rules = [
-        { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: ['eslint-loader'] },
+        { enforce: 'pre', test: /\.js$/, exclude: /node_modules/, use: 'eslint-loader' },
         { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, cssLoader, resolveUrlLoader, sassLoader] },
         { test: /\.(png|jpe?g|gif)$/, use: [fileLoader, imageLoader] }
     ]
@@ -101,7 +104,6 @@ function loadPlugins(environment) {
             forceMode: environment.production ? 'production' : 'development',
             extraArgs: '--no-typescript --out-dir build --out-name rustlib'
         }),
-        new WorkerPlugin({ globalObject: 'self' }),
         new CleanWebpackPlugin()
     ];
 };
