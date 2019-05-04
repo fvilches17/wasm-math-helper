@@ -8,11 +8,12 @@ const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
 const WorkerPlugin = require('worker-plugin');
 
 function loadOutput(environment) {
-    const filename = environment.production ? 'scripts/[name].[hash].min.js' : 'scripts/[name].js';
+    const filename = environment.production ? 'scripts/[name].[contenthash].min.js' : 'scripts/[name].js';
+    const chunkFilename = environment.production ? '[name].[contenthash].min.js' : '[name].js';
     return {
         path: path.resolve(__dirname, 'dist'),
         filename,
-        chunkFilename: '[name].js',
+        chunkFilename,
         publicPath: '/'
     };
 };
@@ -36,7 +37,7 @@ function loadModule(environment) {
 
     const fileLoader = {
         loader: 'file-loader',
-        options: { name: 'media/[name].[hash].[ext]' }
+        options: { name: 'media/[name].[contenthash].[ext]' }
     };
 
     const imageLoader = {
@@ -108,8 +109,8 @@ function loadPlugins(environment) {
             minify: minifyHtmlSettings
         }),
         new MiniCssExtractPlugin({
-            filename: environment.production ? 'styles/[name].[hash].min.css' : 'styles/[name].css',
-            chunkFilename: environment.production ? 'styles/[id].min.css' : 'styles/[id].css'
+            filename: environment.production ? 'styles/[name].[chunkhash].min.css' : 'styles/[name].css',
+            chunkFilename: environment.production ? 'styles/[id].[chunkhash].min.css' : 'styles/[id].css'
         }),
         new WorkerPlugin(),
         new CleanWebpackPlugin()
