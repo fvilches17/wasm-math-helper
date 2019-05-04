@@ -6,11 +6,12 @@ $border-color: #474747;
 
 html {
   margin: 0;
+  height: 100vmax;
+  width: 100vmax;
 
   body {
     background-color: $background-color;
     color: $primary-text-color;
-    height: 100vh;
     font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
     letter-spacing: 0.1em;
     margin: 0;
@@ -28,6 +29,10 @@ html {
       }
     }
 
+    main {
+      text-align: center;
+    }
+
     footer {
       padding: 8vh;
       text-align: center;
@@ -35,10 +40,6 @@ html {
       border-top-style: dashed;
       margin-top: 15px;
       background-color: #e244da09;
-    }
-
-    main {
-      text-align: center;
     }
 
     section {
