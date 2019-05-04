@@ -64,7 +64,7 @@ let greetWasmFunction = undefined;
 async function handleHeaderClickEvent(event) {
     event.preventDefault();
 
-    const { greet } = await import('../rust/greetinglib/build');
+    const { greet } = await import(/* webpackChunkName: "greetinglib" */'../rust/greetinglib/build');
     if (!greetWasmFunction) {
         greetWasmFunction = greet;
     }

@@ -1,16 +1,12 @@
-$primary-text-color: #c9c9c9;
-$text-blue: #00b8e6;
-$webassembly-logo-color: #5100e6;
-$background-color: #1a1a1a;
-$border-color: #474747;
+@import './colors.scss';
 
 html {
-  margin: 0;
+  margin-left: 0;
   height: 100vh;
 
   body {
-    background-color: $background-color;
-    color: $primary-text-color;
+    background-color: $app-darker;
+    color: $app-white;
     font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
     letter-spacing: 0.1em;
     margin: 0;
@@ -21,26 +17,28 @@ html {
       padding-bottom: 2vw;
       text-align: center;
       border-bottom-style: dotted;
-      border-bottom-color: $border-color;
+      border-bottom-color: $app-grey;
+      background-color: $app-dark;
 
       h1 {
         font-size: 4rem;
-        color: $primary-text-color;
+        color: $app-white;
       }
     }
 
     main {
       text-align: center;
       height: 50%;
-      padding: 15px;
+      padding: 20px;
     }
 
     footer {
       padding: 50px;
       text-align: center;
-      border-top-color: $border-color;
+      border-top-color: $app-grey;
       border-top-style: dashed;
-      background-color: #e244da09;
+      background-color: $app-purple-transparent;
+      font-size: small;
     }
 
     section {
@@ -49,15 +47,15 @@ html {
     }
 
     h1 {
-      color: $text-blue;
+      color: $app-blue;
     }
 
     a {
       text-decoration: none;
-      color: $primary-text-color;
+      color: $app-white;
 
       &:hover {
-        color: $text-blue;
+        color: $app-green;
       }
     }
 
@@ -65,15 +63,15 @@ html {
       padding: 15px;
       font-weight: bold;
       font-size: medium;
-      background-color: $webassembly-logo-color;
+      background-color: $app-webAseemblyPurple;
       border: none;
-      color: $primary-text-color;
+      color: $app-white;
       cursor: pointer;
       border-radius: 12px;
+      box-shadow: $app-element-box-shadow;
 
       &:hover {
-        background-color: #5d0cf3;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        background-color: $app-webAseemblyPurple-brighter;
       }
     }
 
@@ -88,24 +86,24 @@ html {
 
     .math-result-correct {
       @extend .math-result;
-      color: #0a9929;
+      color: $app-green;
     }
 
     .math-result-incorrect {
       @extend .math-result;
-      color: #990f0a;
+      color: $app-red;
     }
 
     .math-example {
       margin: 15px;
       padding: 30px;
       border-style: dotted;
-      border-color: $border-color;
-      background-color: #1f1e1ed2;
+      border-color: $app-grey;
+      background-color: $app-dark;
       display: inline-block;
       width: 400px;
       text-align: center;
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      box-shadow: $app-element-box-shadow;
 
       h1 {
         font-size: 3rem;

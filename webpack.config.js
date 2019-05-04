@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserJsPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
+const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
 const WorkerPlugin = require('worker-plugin');
 
 function loadOutput(environment) {
@@ -94,8 +94,8 @@ function loadPlugins(environment) {
             crateDirectory: path.resolve(__dirname, `./src/rust/${libName}`),
             forceMode: environment.production ? 'production' : 'development',
             extraArgs: '--no-typescript --out-dir build --out-name lib'
-        })
-    }
+        });
+    };
 
     return [
         createWasmPackPlugin('mathlib'),
