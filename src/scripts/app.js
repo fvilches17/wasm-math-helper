@@ -3,12 +3,34 @@ import { KeyboardKeyCodes } from './keyboard-key-codes';
 import * as JsNumberHelper from './js-number-helper';
 let isPrimeNumberWasmFunction = undefined;
 
-const checkPrimeNumber = function (number, callback) {
+async function getPrimeNumberResults(number, instructionFormat) {
     JsNumberHelper.validate32BitInteger(number);
-    const startTime = Date.now();
-    const result = callback(number);
-    const timeElapsedInMilliseconds = Date.now() - startTime;
-    return { isPrime: result, timeElapsedInMilliseconds };
+
+    let isPrimeNumber = undefined;
+    let startTime = undefined;
+    let timeElapsedInMilliseconds = undefined;
+    switch (instructionFormat) {
+        case 'JS':
+            startTime = Date.now();
+            isPrimeNumber = JsNumberHelper.isPrimeNumber(number);
+            timeElapsedInMilliseconds = Date.now() - startTime;
+            break;
+
+        case 'WASM':
+            if (!isPrimeNumberWasmFunction) {
+                const { is_prime_number } = await import(/* webpackChunkName: "../rustlib" */ '../rust/build');
+                isPrimeNumberWasmFunction = is_prime_number;
+            }
+            startTime = Date.now();
+            isPrimeNumber = isPrimeNumberWasmFunction(number);
+            timeElapsedInMilliseconds = Date.now() - startTime;
+            break;
+
+        default:
+            throw new Error(`Invalid instruction format: '${instructionFormat}'`);
+    }
+
+    return { isPrimeNumber, timeElapsedInMilliseconds };
 }
 
 function displayMessage(target, message, classList) {
@@ -17,8 +39,8 @@ function displayMessage(target, message, classList) {
 }
 
 function displayResult(target, result) {
-    const message = `${result.isPrime} (${result.timeElapsedInMilliseconds}ms)`;
-    const classList = ['math-result', (result.isPrime ? 'math-result-correct' : 'math-result-incorrect')];
+    const message = `${result.isPrimeNumber} (${result.timeElapsedInMilliseconds}ms)`;
+    const classList = ['math-result', (result.isPrimeNumber ? 'math-result-correct' : 'math-result-incorrect')];
     displayMessage(target, message, classList);
 }
 
@@ -34,27 +56,7 @@ async function handleMathExampleClickEvent(event) {
     displayMessage(resultDisplayArea, 'loading...');
 
     try {
-        let result = undefined;
-        const instructionFormat = button.dataset.instructionFormat;
-
-        switch (instructionFormat) {
-            case 'JS': {
-                result = checkPrimeNumber(number, JsNumberHelper.isPrimeNumber);
-                break;
-            }
-            case 'WASM': {
-                if (!isPrimeNumberWasmFunction) {
-                    const { is_prime_number } = await import(/* webpackChunkName: "../rustlib" */ '../rust/build/rustlib');
-                    isPrimeNumberWasmFunction = is_prime_number;
-                }
-
-                result = checkPrimeNumber(number, isPrimeNumberWasmFunction);
-                break;
-            }
-            default:
-                throw new Error(`Invalid instruction format: '${instructionFormat}'`);
-        }
-
+        const result = await getPrimeNumberResults(number, button.dataset.instructionFormat);
         displayResult(resultDisplayArea, result);
     }
     catch (error) {
