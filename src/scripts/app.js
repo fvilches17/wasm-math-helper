@@ -36,7 +36,11 @@ async function getPrimeNumberCheckResult(number, instructionFormat) {
 }
 
 function displayMessage(target, message, classList) {
-    if (classList) target.classList.add(...classList);
+    if (classList) {
+        target.className = ''/*Clear all classes*/;
+        target.classList.add(...classList)
+    }
+
     target.innerText = message;
 }
 

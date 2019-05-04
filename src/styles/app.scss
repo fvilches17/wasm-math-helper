@@ -36,17 +36,11 @@ html {
     }
 
     footer {
-      padding-top: 30px;
+      padding: 50px;
       text-align: center;
       border-top-color: $border-color;
       border-top-style: dashed;
       background-color: #e244da09;
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      height: 100px;
-      width: 100%;
-      overflow: hidden;
     }
 
     section {
