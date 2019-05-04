@@ -35,19 +35,11 @@ async function getPrimeNumberCheckResult(number, instructionFormat) {
     return { isPrimeNumber, timeElapsedInMilliseconds };
 }
 
-function displayMessage(target, message, classList) {
-    if (classList) {
-        target.className = ''/*Clear all classes*/;
-        target.classList.add(...classList)
-    }
-
-    target.innerText = message;
-}
-
 function displayResult(target, result) {
     const message = `${result.isPrimeNumber} (${result.timeElapsedInMilliseconds}ms)`;
-    const classList = ['math-result', (result.isPrimeNumber ? 'math-result-correct' : 'math-result-incorrect')];
-    displayMessage(target, message, classList);
+    target.classList.toggle('math-result-correct', result.isPrimeNumber);
+    target.classList.toggle('math-result-incorrect', !result.isPrimeNumber);
+    target.innerText = message;
 }
 
 async function handleMathExampleClickEvent(event) {
@@ -55,20 +47,20 @@ async function handleMathExampleClickEvent(event) {
     const button = event.target;
     const parentElement = button.parentElement;
     const input = parentElement.querySelector('input');
-    const previousValue = input.dataset.enteredval;
+    const previousValue = input.dataset.previousVal;
     const number = Number.parseInt(input.value);
     if (!number || number == previousValue) return;
-    input.dataset.enteredval = number;
+    input.dataset.previousVal = number;
 
     const resultDisplayArea = parentElement.querySelector('.math-result');
-    displayMessage(resultDisplayArea, 'loading...');
+    resultDisplayArea.innerText = 'loading...';
 
     try {
         const result = await getPrimeNumberCheckResult(number, button.dataset.instructionFormat);
         displayResult(resultDisplayArea, result);
     }
     catch (error) {
-        displayMessage(resultDisplayArea, error);
+        resultDisplayArea.innerText = error;
     }
 }
 
