@@ -2,7 +2,7 @@ wasm-math-helper
 ================
 A math app demonstrating how Rust and WebAssembly can be integrated in web projects. The app compares performance between JS and Wasm by providing the same math functions but written in their respective language.
 
-<img src="./documentation/website-display.PNG" />
+<img src="./documentation/website-main-display.PNG" />
 
 ## Pre-Requisites
 1. Install NodeJs. https://nodejs.org/en/download/
