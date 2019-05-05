@@ -4,7 +4,8 @@ A math app demonstrating how Rust and WebAssembly can be integrated in web proje
 <img src="./documentation/website-display.PNG" />
 
 ## Working Example
-You can find a working example [HERE](https://franciscovstaticsites.z8.web.core.windows.net/)
+You can find a working example <a href="https://franciscovstaticsites.z8.web.core.windows.net/" target="_blank">HERE</a>
+
 
 ## Pre-Requisites
 1. Install NodeJs. https://nodejs.org/en/download/
