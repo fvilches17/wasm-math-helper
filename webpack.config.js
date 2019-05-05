@@ -91,10 +91,12 @@ function loadPlugins(environment) {
     } : false;
 
     function createWasmPackPlugin(libName) {
+        let extraArgs = '--no-typescript --out-dir build --out-name lib';
+        if (environment.production) extraArgs += '  --release';
+
         return new WasmPackPlugin({
             crateDirectory: path.resolve(__dirname, `./src/rust/${libName}`),
-            forceMode: environment.production ? 'production' : 'development',
-            extraArgs: '--no-typescript --out-dir build --out-name lib'
+            extraArgs
         });
     };
 

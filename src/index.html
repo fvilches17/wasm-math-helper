@@ -13,24 +13,46 @@
         <h1>Wasm Math Helper</h1>
     </header>
     <main>
+        <!-- Is Prime -->
         <section>
             <div class="math-example">
                 <h1>Wasm</h1>
-                <h2>Is Prime Number</h2>
+                <h2>Is Prime Number?</h2>
                 <input type="number" placeholder="e.g. 2145390523">
-                <button data-instruction-format="WASM">Check</button>
+                <button data-instruction-format="WASM" data-operation="IsPrime">Check</button>
+                <hr>
+                <span class="math-result">...</span>
+                <img class="loader" src="<%=require('./media/loader-rainy-clouds.gif')%>" alt="loading...">
+            </div>
+
+            <div class="math-example">
+                <h1>JS</h1>
+                <h2>Is Prime Number?</h2>
+                <input type="number" placeholder="e.g. 2145390523">
+                <button data-instruction-format="JS" data-operation="IsPrime">Check</button>
                 <hr>
                 <span class="math-result">...</span>
                 <img class="loader" src="<%=require('./media/loader-rainy-clouds.gif')%>" alt="loading...">
             </div>
         </section>
 
+        <!-- How Many Primes -->
         <section>
             <div class="math-example">
+                <h1>Wasm</h1>
+                <h2>How Many Primes?</h2>
+                <input type="number" placeholder="1 - 2145390523">
+                <button data-instruction-format="WASM" data-operation="HowManyPrimes">Check</button>
+                <hr>
+                <span class="math-result">...</span>
+                <img class="loader" src="<%=require('./media/loader-rainy-clouds.gif')%>" alt="loading...">
+            </div>
+
+            <div class="math-example">
                 <h1>JS</h1>
-                <h2>Is Prime Number</h2>
-                <input type="number" placeholder="e.g. 2145390523">
-                <button data-instruction-format="JS">Check</button>
+                <h2>How Many Primes?</h2>
+                <input type="number" placeholder="1 - 2145390523">
+                <button data-instruction-format="JS" data-operation="HowManyPrimes">Check</button>
                 <hr>
                 <span class="math-result">...</span>
                 <img class="loader" src="<%=require('./media/loader-rainy-clouds.gif')%>" alt="loading...">

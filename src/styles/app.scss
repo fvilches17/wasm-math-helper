@@ -30,6 +30,7 @@ html {
       text-align: center;
       height: 50%;
       padding: 20px;
+      height: auto;
     }
 
     footer {
@@ -38,7 +39,6 @@ html {
       border-top-color: $app-grey;
       border-top-style: dashed;
       background-color: $app-purple-transparent;
-      font-size: small;
     }
 
     section {

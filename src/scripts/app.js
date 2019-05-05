@@ -1,10 +1,9 @@
 import '../styles/app.scss';
 import { KeyboardKeyCodes } from './keyboard-key-codes';
 
-function displayResult(target, result) {
-    const message = `${result.isPrimeNumber} (${result.timeElapsedInMilliseconds}ms)`;
-    target.classList.toggle('math-result-correct', result.isPrimeNumber);
-    target.classList.toggle('math-result-incorrect', !result.isPrimeNumber);
+function displayResult(target, message, isCorrect) {
+    target.classList.toggle('math-result-correct', isCorrect);
+    target.classList.toggle('math-result-incorrect', !isCorrect);
     target.innerText = message;
 }
 
@@ -15,7 +14,6 @@ function displayMessage(target, message) {
 }
 
 const mathWorker = new Worker('./math.worker.js', { type: 'module' });
-
 async function handleMathExampleClickEvent(event) {
     event.preventDefault();
     const button = event.target;
@@ -30,21 +28,38 @@ async function handleMathExampleClickEvent(event) {
     const loader = parentElement.querySelector('.loader');
     loader.style.visibility = 'visible';
 
+    const instructionFormat = button.dataset.instructionFormat;
+    const operation = button.dataset.operation;
+
     mathWorker.onmessage = event => {
-        displayResult(resultDisplayArea, event.data);
-        loader.style.visibility = 'hidden';
+
+        switch (operation) {
+            case 'IsPrime': {
+                const message = `${event.data.isPrimeNumber} (${event.data.timeElapsedInMilliseconds}ms)`;
+                displayResult(resultDisplayArea, message, event.data.isPrimeNumber);
+                loader.style.visibility = 'hidden';
+                break;
+            }
+
+            case 'HowManyPrimes': {
+                const message = `${event.data.numberOfPrimes} Primes Found in ${event.data.timeElapsedInMilliseconds}ms`;
+                displayResult(resultDisplayArea, message, event.data.numberOfPrimes > 0);
+                loader.style.visibility = 'hidden';
+                break;
+            }
+
+            default:
+                throw new Error(`Internal error, operation not supported: '${operation}'`);
+        }
     };
 
     mathWorker.onerror = event => {
         displayMessage(resultDisplayArea, event.data);
         loader.style.visibility = 'hidden';
+        mathWorker.terminate;
     };
 
-    mathWorker.postMessage({
-        operation: 'CheckIfPrimeNumber',
-        number,
-        instructionFormat: button.dataset.instructionFormat
-    });
+    mathWorker.postMessage({ number, instructionFormat, operation });
 }
 
 function processKeyUpEvent(event) {
@@ -56,7 +71,6 @@ function processKeyUpEvent(event) {
         button.click();
     }
 }
-
 
 let greetWasmFunction = undefined;
 async function handleHeaderClickEvent(event) {

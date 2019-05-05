@@ -24,3 +24,23 @@ pub fn is_prime_number(number: i32) -> bool {
 
     return true;
 }
+
+#[wasm_bindgen]
+pub fn calculate_number_of_primes(upperLimit: i32) -> i32 {
+    if upperLimit < 1 {
+        return 0;
+    }
+
+    let mut count: i32 = 0;
+    let mut index: i32 = 1;
+    
+    while index <= upperLimit {
+        if (is_prime_number(index)) {
+            count += 1;
+        }
+
+        index += 2;
+    }
+
+    return count;
+}
