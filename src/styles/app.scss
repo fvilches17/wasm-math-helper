@@ -24,6 +24,11 @@ html {
         font-size: 4rem;
         color: $app-white;
       }
+
+      small {
+        font-size: medium;
+        cursor: pointer;
+      }
     }
 
     main {
