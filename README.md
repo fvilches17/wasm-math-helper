@@ -2,7 +2,7 @@ wasm-math-helper
 ================
 A math app demonstrating how Rust and WebAssembly can be integrated in web projects. The app compares performance between JS and Wasm by providing the same math functions but written in their respective language.
 
-<img src="website-display.PNG" />
+<img src="./documentation/website-display.PNG" />
 
 ## Pre-Requisites
 1. Install NodeJs. https://nodejs.org/en/download/
@@ -20,8 +20,8 @@ A math app demonstrating how Rust and WebAssembly can be integrated in web proje
 
 * Rust can talk to the browser window / DOM! Inside the project, refer to the src/rust/greetinglb folder where you will find an example of Rust being integrated with the window and DOM.
 
-
-
+<img src="./documentation/code-display-rustgreetinglib.PNG" />
+<img src="./documentation/website-display-rustgreeting.PNG" />
 
 ## Further Reading
 For more information on building web applications with Rust and WebAssembly, refer to the following sources:
