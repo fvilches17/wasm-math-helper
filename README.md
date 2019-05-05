@@ -1,2 +1,4 @@
 # wasm-math-helper
-A short math app demonstrating how rust and webassembly can be integrated in web projects
+A math app demonstrating how Rust and WebAssembly can be integrated in web projects
+
+<img src="website-display.PNG" />
