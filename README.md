@@ -21,7 +21,6 @@ A math app demonstrating how Rust and WebAssembly can be integrated in web proje
 * Rust can talk to the browser window / DOM! Inside the project, refer to the src/rust/greetinglb folder where you will find an example of Rust being integrated with the window and DOM.
 
 <img src="./documentation/code-display-rustgreetinglib.PNG" />
-<img src="./documentation/website-display-rustgreeting.PNG" />
 
 ## Further Reading
 For more information on building web applications with Rust and WebAssembly, refer to the following sources:
