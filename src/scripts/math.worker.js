@@ -15,7 +15,6 @@ async function getPrimeNumberResult(number, instructionFormat) {
             return { isPrimeNumber, timeElapsedInMilliseconds };
         }
 
-
         case 'WASM': {
             const startTime = Date.now();
             const isPrimeNumber = isPrimeNumberWasmFunction(number);
@@ -39,7 +38,6 @@ async function getNumberOfPrimes(upperLimit, instructionFormat) {
             const timeElapsedInMilliseconds = Date.now() - startTime;
             return { numberOfPrimes, timeElapsedInMilliseconds };
         }
-
 
         case 'WASM': {
             const startTime = Date.now();

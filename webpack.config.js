@@ -114,7 +114,7 @@ function loadPlugins(environment) {
             filename: environment.production ? 'styles/[name].[chunkhash].min.css' : 'styles/[name].css',
             chunkFilename: environment.production ? 'styles/[id].[chunkhash].min.css' : 'styles/[id].css'
         }),
-        new WorkerPlugin(),
+        new WorkerPlugin({globalObject: 'self' }),
         new CleanWebpackPlugin()
     ];
 };

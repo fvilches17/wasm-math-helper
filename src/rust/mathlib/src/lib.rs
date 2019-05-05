@@ -31,11 +31,15 @@ pub fn calculate_number_of_primes(upperLimit: i32) -> i32 {
         return 0;
     }
 
+    if upperLimit == 2 {
+        return 1;
+    }
+
     let mut count: i32 = 0;
     let mut index: i32 = 1;
     
     while index <= upperLimit {
-        if (is_prime_number(index)) {
+        if is_prime_number(index) {
             count += 1;
         }
 

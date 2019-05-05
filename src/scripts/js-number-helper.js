@@ -43,6 +43,7 @@ export function isPrimeNumber(number) {
  */
 export function calculateNumberOfPrimes(upperLimit) {
     if (upperLimit < 1) return 0;
+    if (upperLimit == 2) return 1;
 
     let count = 0;
     let index = 1;
